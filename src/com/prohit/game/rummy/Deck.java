@@ -27,9 +27,11 @@ class Deck {
     }
 
     Stack<Card> getStock() {
+        // If current stock is empty during the game then put discarded pile back into stock.
         if (stock.isEmpty()) {
             Card discardedCard = this.discardedPile.pop();
             stock.addAll(discardedPile);
+            shuffle();
             discardedPile.empty();
             discardedPile.push(discardedCard);
         }
@@ -45,6 +47,7 @@ class Deck {
     }
 
     private void initialize() {
+        // Create new deck of cards with 4 suits each with 13 face values.
         for (Suit suit : Suit.values()) {
             for (FaceValue faceValue : FaceValue.values()) {
                 if (!FaceValue.JOKER.equals(faceValue)) {
@@ -52,6 +55,7 @@ class Deck {
                 }
             }
         }
+        // If Joker is to be included in game, then add 2 Joker cards.
         if (includeJoker) {
             stock.add(new Card(null, FaceValue.JOKER));
             stock.add(new Card(null, FaceValue.JOKER));
@@ -66,6 +70,7 @@ class Deck {
     }
 
     void distribute(List<Player> players) {
+        // Distribute 7 cards to each player
         for (Player player : players) {
             for (int i = 0; i < 7; i++) {
                 player.getCards().add(stock.pop());

@@ -24,6 +24,7 @@ class Player {
     }
 
     void sort() {
+        // Sort cards according to face values in increasing order.
         cards.sort((card1, card2) -> {
             if (card1.getFaceValue().getValue().equals(card2.getFaceValue().getValue()))
                 return 0;
@@ -35,32 +36,39 @@ class Player {
     }
 
     Boolean draw(Scanner scanner, Deck deck) {
+
         System.out.println(toString());
+
         Card discardedCard = deck.getDiscardedPile().pop();
         System.out.println("\tCurrent discarded card: " + discardedCard);
-        System.out.print("\tDo you want to use this card (Y|N)? ");
+
+        System.out.print("\tDo you want to use discarded card (Y|N)? ");
         String useCard = scanner.nextLine();
         System.out.print("\n");
+
         if ("Y".equalsIgnoreCase(useCard) || "YES".equalsIgnoreCase(useCard)) {
-            if (arrangeCards(scanner, deck, discardedCard)) {
+            if (checkMelds(scanner, deck, discardedCard)) {
                 return true;
             }
         } else {
+
             deck.getDiscardedPile().push(discardedCard);
+
             System.out.println("\tDrawing new card from the stock... ");
             Card newCard = deck.getStock().pop();
             System.out.println("\tNew card: " + newCard);
+
             if (FaceValue.JOKER.equals(newCard.getFaceValue())) {
                 System.out.print("\n");
-                System.out.println("\t" + name + ", you will miss next 2 turns because of drawing Joker...");
+                System.out.println("\t" + name + ", you will miss next 2 turns because of drawing Joker !!!");
                 System.out.print("\n");
                 deck.getMissedTurnCount().put(name, 2);
             } else {
-                System.out.print("\tDo you want to use this card (Y|N)? ");
+                System.out.print("\tDo you want to use new card (Y|N)? ");
                 useCard = scanner.nextLine();
                 System.out.print("\n");
                 if ("Y".equalsIgnoreCase(useCard) || "YES".equalsIgnoreCase(useCard)) {
-                    if (arrangeCards(scanner, deck, newCard)) {
+                    if (checkMelds(scanner, deck, newCard)) {
                         return true;
                     }
                 } else {
@@ -71,18 +79,22 @@ class Player {
         return false;
     }
 
-    private boolean arrangeCards(Scanner scanner, Deck deck, Card currentCard) {
+    private boolean checkMelds(Scanner scanner, Deck deck, Card currentCard) {
+
         System.out.print("\tRemove one card(1-7): ");
         Card removedCard = cards.remove(scanner.nextInt() - 1);
         System.out.print("\n");
         System.out.println("\tYou removed: " + removedCard);
+
         cards.add(currentCard);
         sort();
         deck.getDiscardedPile().push(removedCard);
+
         scanner.nextLine();
         System.out.print("\tYour melds are ready? ");
         String meldReady = scanner.nextLine();
         System.out.print("\n");
+
         if ("Y".equalsIgnoreCase(meldReady) || "YES".equalsIgnoreCase(meldReady)) {
             System.out.println(toString());
             System.out.print("\n");

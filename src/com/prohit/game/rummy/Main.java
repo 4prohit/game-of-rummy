@@ -59,20 +59,25 @@ public class Main {
 
             while (true) {
                 Boolean result = false;
+                // If user has drawn Joker in previous turns then it will miss 2 turns.
                 Integer missedCount = deck.getMissedTurnCount().get(players.get(currentPlayerId).getName());
                 if (null != missedCount && 0 < missedCount) {
                     if (1 < missedCount) {
+                        // Skip current turn and decrease missed turns count.
                         deck.getMissedTurnCount().put(players.get(currentPlayerId).getName(), --missedCount);
                     } else {
+                        // Remove entry from missed turn map if user has already missed 2 turns.
                         deck.getMissedTurnCount().remove(players.get(currentPlayerId).getName());
                     }
                 } else {
+                    // Draw card and arrange to create melds
                     result = players.get(currentPlayerId).draw(scanner, deck);
                 }
                 if (result) {
                     calculateScore(players, currentPlayerId);
                     break;
                 }
+                // Next player's turn in round-robin manner
                 currentPlayerId++;
                 if (players.size() <= currentPlayerId) {
                     currentPlayerId = 0;
