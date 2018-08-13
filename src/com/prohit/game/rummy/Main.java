@@ -103,6 +103,6 @@ public class Main {
             }
         }
         // Removing players whose score has crossed 101
-        players.removeIf(player -> (null != player.getScore() && 60 <= player.getScore()) || player.getName().equals(name));
+        players.removeIf(player -> (null != player.getScore() && 101 <= player.getScore()) || player.getName().equals(name));
     }
 }
