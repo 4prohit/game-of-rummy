@@ -1,21 +1,21 @@
 package com.prohit.game.rummy;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class Deck {
 
-    private List<Card> stock = new ArrayList();
+    private Stack<Card> stock = new Stack<>();
 
-    private Boolean withJoker;
+    private Boolean includeJoker;
 
-    private Stack<Card> discardedPile = new Stack();
+    private Stack<Card> discardedPile = new Stack<>();
 
-    public Deck(Boolean withJoker) {
-        this.withJoker = withJoker;
+    public Deck(Boolean includeJoker) {
+        this.includeJoker = includeJoker;
         initialize();
+        shuffle();
     }
 
     private void initialize() {
@@ -26,16 +26,26 @@ public class Deck {
                 }
             }
         }
-        if (withJoker) {
-            stock.add(new Card(Suit.NA, FaceValue.JOKER));
-            stock.add(new Card(Suit.NA, FaceValue.JOKER));
+        if (includeJoker) {
+            stock.add(new Card(null, FaceValue.JOKER));
+            stock.add(new Card(null, FaceValue.JOKER));
             assert stock.size() == 54;
         } else {
             assert stock.size() == 52;
         }
+        System.out.println("Stock: " + stock);
     }
 
-    public void shuffle(List<Card> stock) {
+    public void shuffle() {
         Collections.shuffle(stock);
+    }
+
+    public void distribute(List<Player> players) {
+        for (Player player : players) {
+            for (int i = 0; i < 7; i++) {
+                player.getCards().add(stock.pop());
+            }
+            System.out.println(player.getName() + ": " + player.getCards());
+        }
     }
 }

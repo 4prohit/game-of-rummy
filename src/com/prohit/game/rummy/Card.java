@@ -26,4 +26,13 @@ public class Card {
     public void setFaceValue(FaceValue faceValue) {
         this.faceValue = faceValue;
     }
+
+    @Override
+    public String toString() {
+        if(FaceValue.JOKER.equals(faceValue)){
+            return FaceValue.JOKER.toString();
+        } else {
+            return faceValue + "-" + suit;
+        }
+    }
 }
