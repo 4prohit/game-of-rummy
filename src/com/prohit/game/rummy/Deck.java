@@ -1,9 +1,7 @@
 package com.prohit.game.rummy;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 class Deck {
@@ -14,12 +12,9 @@ class Deck {
 
     private Stack<Card> discardedPile;
 
-    private Map<String, Integer> missedTurnCount;
-
     Deck(Boolean includeJoker) {
         this.stock = new Stack<>();
         this.discardedPile = new Stack<>();
-        this.missedTurnCount = new HashMap<>();
         this.includeJoker = includeJoker;
         initialize();
         shuffle();
@@ -40,10 +35,6 @@ class Deck {
 
     public Stack<Card> getDiscardedPile() {
         return discardedPile;
-    }
-
-    public Map<String, Integer> getMissedTurnCount() {
-        return missedTurnCount;
     }
 
     private void initialize() {

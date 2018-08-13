@@ -10,9 +10,14 @@ class Player {
 
     private List<Card> cards;
 
+    private Integer missingTurns;
+
+    private Integer score;
+
     Player(String name) {
         this.name = name;
         this.cards = new ArrayList<>();
+        this.missingTurns = 0;
     }
 
     public String getName() {
@@ -21,6 +26,22 @@ class Player {
 
     List<Card> getCards() {
         return cards;
+    }
+
+    public Integer getMissingTurns() {
+        return missingTurns;
+    }
+
+    public void setMissingTurns(Integer missingTurns) {
+        this.missingTurns = missingTurns;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     void sort() {
@@ -47,9 +68,7 @@ class Player {
         System.out.print("\n");
 
         if ("Y".equalsIgnoreCase(useCard) || "YES".equalsIgnoreCase(useCard)) {
-            if (checkMelds(scanner, deck, discardedCard)) {
-                return true;
-            }
+            arrangeCards(scanner, deck, discardedCard);
         } else {
 
             deck.getDiscardedPile().push(discardedCard);
@@ -62,35 +81,37 @@ class Player {
                 System.out.print("\n");
                 System.out.println("\t" + name + ", you will miss next 2 turns because of drawing Joker !!!");
                 System.out.print("\n");
-                deck.getMissedTurnCount().put(name, 2);
+                missingTurns = 2;
             } else {
                 System.out.print("\tDo you want to use new card (Y|N)? ");
                 useCard = scanner.nextLine();
                 System.out.print("\n");
                 if ("Y".equalsIgnoreCase(useCard) || "YES".equalsIgnoreCase(useCard)) {
-                    if (checkMelds(scanner, deck, newCard)) {
-                        return true;
-                    }
+                    arrangeCards(scanner, deck, newCard);
                 } else {
                     deck.getDiscardedPile().push(newCard);
                 }
             }
         }
-        return false;
+        return checkMelds(scanner);
     }
 
-    private boolean checkMelds(Scanner scanner, Deck deck, Card currentCard) {
+    private void arrangeCards(Scanner scanner, Deck deck, Card currentCard) {
 
         System.out.print("\tRemove one card(1-7): ");
         Card removedCard = cards.remove(scanner.nextInt() - 1);
         System.out.print("\n");
         System.out.println("\tYou removed: " + removedCard);
+        System.out.print("\n");
+        scanner.nextLine();
 
         cards.add(currentCard);
         sort();
         deck.getDiscardedPile().push(removedCard);
+    }
 
-        scanner.nextLine();
+    private boolean checkMelds(Scanner scanner) {
+
         System.out.print("\tYour melds are ready? ");
         String meldReady = scanner.nextLine();
         System.out.print("\n");

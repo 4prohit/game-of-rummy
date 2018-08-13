@@ -37,59 +37,60 @@ public class Main {
                 includeJoker = true;
             }
 
-            System.out.println("Initializing deck for new game...");
-            Deck deck = new Deck(includeJoker);
-            System.out.print(deck);
-            System.out.print("\n\n");
+            while (1 < players.size()) {
 
-            System.out.println("Shuffling cards...");
-            deck.shuffle();
-            System.out.print(deck);
-            System.out.print("\n\n");
+                System.out.println("Initializing deck for new game...");
+                Deck deck = new Deck(includeJoker);
+                System.out.print(deck);
+                System.out.print("\n\n");
 
-            System.out.println("Distributing cards to each player...");
-            deck.distribute(players);
-            System.out.print("\n");
+                System.out.println("Shuffling cards...");
+                deck.shuffle();
+                System.out.print(deck);
+                System.out.print("\n\n");
 
-            System.out.println("Shuffle again and start the game...");
-            deck.shuffle();
-            System.out.print("\n");
+                System.out.println("Distributing cards to each player...");
+                deck.distribute(players);
+                System.out.print("\n");
 
-            Integer currentPlayerId = new Random().nextInt(players.size());
+                System.out.println("Shuffle again and start the game...");
+                deck.shuffle();
+                System.out.print("\n");
 
-            while (true) {
-                Boolean result = false;
-                // If user has drawn Joker in previous turns then it will miss 2 turns.
-                Integer missedCount = deck.getMissedTurnCount().get(players.get(currentPlayerId).getName());
-                if (null != missedCount && 0 < missedCount) {
-                    if (1 < missedCount) {
-                        // Skip current turn and decrease missed turns count.
-                        deck.getMissedTurnCount().put(players.get(currentPlayerId).getName(), --missedCount);
+                Integer currentPlayerId = new Random().nextInt(players.size());
+
+                while (true) {
+                    Boolean result = false;
+                    // If player has drawn Joker in previous turns then he will miss 2 turns.
+                    Integer missingTurns = players.get(currentPlayerId).getMissingTurns();
+                    if (null != missingTurns && 0 < missingTurns) {
+                        if (1 < missingTurns) {
+                            // Skip current turn and decrease missed turns count.
+                            players.get(currentPlayerId).setMissingTurns(--missingTurns);
+                        }
                     } else {
-                        // Remove entry from missed turn map if user has already missed 2 turns.
-                        deck.getMissedTurnCount().remove(players.get(currentPlayerId).getName());
+                        // Draw card and commence new turn
+                        result = players.get(currentPlayerId).draw(scanner, deck);
                     }
-                } else {
-                    // Draw card and arrange to create melds
-                    result = players.get(currentPlayerId).draw(scanner, deck);
-                }
-                if (result) {
-                    calculateScore(players, currentPlayerId);
-                    break;
-                }
-                // Next player's turn in round-robin manner
-                currentPlayerId++;
-                if (players.size() <= currentPlayerId) {
-                    currentPlayerId = 0;
+                    if (result) {
+                        calculateScore(deck, players, players.get(currentPlayerId).getName());
+                        break;
+                    }
+                    // Next player's turn in round-robin manner
+                    currentPlayerId++;
+                    if (players.size() <= currentPlayerId) {
+                        currentPlayerId = 0;
+                    }
                 }
             }
+            System.out.println("\nGame Over");
         }
     }
 
-    private static void calculateScore(List<Player> players, Integer currentPlayerId) {
+    private static void calculateScore(Deck deck, List<Player> players, String name) {
         System.out.println("Calculating score for each player...");
         for (Player player : players) {
-            if (player.getName().equals(players.get(currentPlayerId).getName())) {
+            if (player.getName().equals(name)) {
                 System.out.println("\t" + player.getName() + " is a winner !!!");
             } else {
                 Integer score = 0;
@@ -97,7 +98,11 @@ public class Main {
                     score += card.getFaceValue().getValue();
                 }
                 System.out.println("\t" + player.getName() + " has a score of " + score);
+                System.out.print("\n");
+                player.setScore(score);
             }
         }
+        // Removing players whose score has crossed 101
+        players.removeIf(player -> (null != player.getScore() && 60 <= player.getScore()) || player.getName().equals(name));
     }
 }
