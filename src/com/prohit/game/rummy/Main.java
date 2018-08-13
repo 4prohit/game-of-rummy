@@ -15,8 +15,9 @@ public class Main {
 
             System.out.println("*** Game of Rummy ***");
 
-            System.out.println("Please enter number of players(2-4): ");
+            System.out.print("Please enter number of players(2-4): ");
             final Integer noOfPlayers = scanner.nextInt();
+            System.out.print("\n");
 
             if (2 > noOfPlayers || 4 < noOfPlayers) {
                 System.out.println(String.format("Can not play this game with %s players. Minimum 2 or maximum 4 players are required.", noOfPlayers));
@@ -28,23 +29,69 @@ public class Main {
             }
 
             scanner.nextLine();
-            System.out.println("Do you want to include Joker (Y|N)? ");
+            System.out.print("Do you want to include Joker (Y|N)? ");
             String includeJokerInput = scanner.nextLine();
+            System.out.print("\n");
             Boolean includeJoker = false;
             if ("Y".equalsIgnoreCase(includeJokerInput) || "YES".equalsIgnoreCase(includeJokerInput)) {
                 includeJoker = true;
             }
 
+            System.out.println("Initializing deck for new game...");
             Deck deck = new Deck(includeJoker);
+            System.out.print(deck);
+            System.out.print("\n\n");
+
+            System.out.println("Shuffling cards...");
             deck.shuffle();
+            System.out.print(deck);
+            System.out.print("\n\n");
+
+            System.out.println("Distributing cards to each player...");
             deck.distribute(players);
+            System.out.print("\n");
 
-            System.out.println("Let's start the game: ");
+            System.out.println("Shuffle again and start the game...");
+            deck.shuffle();
+            System.out.print("\n");
 
-            Integer turn = new Random().nextInt(players.size());
-            while(true) {
+            Integer currentPlayerId = new Random().nextInt(players.size());
 
+            while (true) {
+                Boolean result = false;
+                Integer missedCount = deck.getMissedTurnCount().get(players.get(currentPlayerId).getName());
+                if (null != missedCount && 0 < missedCount) {
+                    if (1 < missedCount) {
+                        deck.getMissedTurnCount().put(players.get(currentPlayerId).getName(), --missedCount);
+                    } else {
+                        deck.getMissedTurnCount().remove(players.get(currentPlayerId).getName());
+                    }
+                } else {
+                    result = players.get(currentPlayerId).draw(scanner, deck);
+                }
+                if (result) {
+                    calculateScore(players, currentPlayerId);
+                    break;
+                }
+                currentPlayerId++;
+                if (players.size() <= currentPlayerId) {
+                    currentPlayerId = 0;
+                }
+            }
+        }
+    }
 
+    private static void calculateScore(List<Player> players, Integer currentPlayerId) {
+        System.out.println("Calculating score for each player...");
+        for (Player player : players) {
+            if (player.getName().equals(players.get(currentPlayerId).getName())) {
+                System.out.println("\t" + player.getName() + " is a winner !!!");
+            } else {
+                Integer score = 0;
+                for (Card card : player.getCards()) {
+                    score += card.getFaceValue().getValue();
+                }
+                System.out.println("\t" + player.getName() + " has a score of " + score);
             }
         }
     }

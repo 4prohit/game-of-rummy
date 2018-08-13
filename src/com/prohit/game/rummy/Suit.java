@@ -1,6 +1,6 @@
 package com.prohit.game.rummy;
 
-public enum Suit {
+enum Suit {
     CLUBS,
     DIAMONDS,
     HEARTS,

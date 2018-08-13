@@ -1,6 +1,6 @@
 package com.prohit.game.rummy;
 
-public enum FaceValue {
+enum FaceValue {
 
     ACE(1),
     TWO(2),
