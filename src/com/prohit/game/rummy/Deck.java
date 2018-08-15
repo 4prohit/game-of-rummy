@@ -12,13 +12,20 @@ class Deck {
 
     private Stack<Card> discardedPile;
 
-    Deck(Boolean includeJoker) {
+    private Integer eliminationScore;
+
+    Deck(Boolean includeJoker, Integer eliminationScore) {
         this.stock = new Stack<>();
         this.discardedPile = new Stack<>();
+        if (null == includeJoker) {
+            includeJoker = false;
+        }
         this.includeJoker = includeJoker;
+        if (null == eliminationScore || 0 >= eliminationScore) {
+            eliminationScore = 101;
+        }
+        this.eliminationScore = eliminationScore;
         initialize();
-        shuffle();
-        this.discardedPile.push(this.stock.pop());
     }
 
     Stack<Card> getStock() {
@@ -33,11 +40,18 @@ class Deck {
         return stock;
     }
 
-    public Stack<Card> getDiscardedPile() {
+    Stack<Card> getDiscardedPile() {
         return discardedPile;
     }
 
-    private void initialize() {
+    Integer getEliminationScore() {
+        return eliminationScore;
+    }
+
+    void initialize() {
+        stock.clear();
+        discardedPile.clear();
+
         // Create new deck of cards with 4 suits each with 13 face values.
         for (Suit suit : Suit.values()) {
             for (FaceValue faceValue : FaceValue.values()) {
@@ -54,6 +68,7 @@ class Deck {
         } else {
             assert stock.size() == 52;
         }
+        this.discardedPile.push(this.stock.pop());
     }
 
     void shuffle() {

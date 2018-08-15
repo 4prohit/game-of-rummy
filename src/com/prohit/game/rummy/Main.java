@@ -28,6 +28,10 @@ public class Main {
                 players.add(new Player("Player-" + i));
             }
 
+            System.out.print("Please enter score to eliminate players: ");
+            final Integer eliminationScore = scanner.nextInt();
+            System.out.print("\n");
+
             scanner.nextLine();
             System.out.print("Do you want to include Joker (Y|N)? ");
             String includeJokerInput = scanner.nextLine();
@@ -37,11 +41,26 @@ public class Main {
                 includeJoker = true;
             }
 
+            System.out.println("Initializing deck for game...");
+            Deck deck = new Deck(includeJoker, eliminationScore);
+            System.out.print(deck);
+            System.out.print("\n\n");
+
+            // Keep playing until only winning player is remaining based on elimination score.
             while (1 < players.size()) {
 
-                System.out.println("Initializing deck for new game...");
-                Deck deck = new Deck(includeJoker);
-                System.out.print(deck);
+                System.out.println("Starting new game...");
+                System.out.print("\n\n");
+
+                // Reset deck
+                deck.initialize();
+
+                // Reset cards of all players
+                System.out.println("Current scores of all players...");
+                players.forEach(player -> {
+                    player.getCards().clear();
+                    System.out.println("\t" + player.getName() + "=> " + player.getScore());
+                });
                 System.out.print("\n\n");
 
                 System.out.println("Shuffling cards...");
@@ -93,16 +112,18 @@ public class Main {
             if (player.getName().equals(name)) {
                 System.out.println("\t" + player.getName() + " is a winner !!!");
             } else {
-                Integer score = 0;
+                Integer currentScore = 0;
                 for (Card card : player.getCards()) {
-                    score += card.getFaceValue().getValue();
+                    currentScore += card.getFaceValue().getValue();
                 }
-                System.out.println("\t" + player.getName() + " has a score of " + score);
-                System.out.print("\n");
-                player.setScore(score);
+                System.out.println("\t" + player.getName() + " has a score of " + currentScore);
+                player.setScore(player.getScore() + currentScore);
             }
         }
-        // Removing players whose score has crossed 101
-        players.removeIf(player -> (null != player.getScore() && 101 <= player.getScore()) || player.getName().equals(name));
+        System.out.print("\n");
+        // Remove players whose score has crossed elimination score
+        System.out.println("Removing player whose score has crossed elimination score of " + deck.getEliminationScore());
+        players.removeIf(player -> (null != player.getScore() && deck.getEliminationScore() <= player.getScore()));
+        System.out.print("\n\n");
     }
 }

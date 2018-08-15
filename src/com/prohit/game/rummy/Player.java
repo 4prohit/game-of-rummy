@@ -18,9 +18,10 @@ class Player {
         this.name = name;
         this.cards = new ArrayList<>();
         this.missingTurns = 0;
+        this.score = 0;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -28,19 +29,19 @@ class Player {
         return cards;
     }
 
-    public Integer getMissingTurns() {
+    Integer getMissingTurns() {
         return missingTurns;
     }
 
-    public void setMissingTurns(Integer missingTurns) {
+    void setMissingTurns(Integer missingTurns) {
         this.missingTurns = missingTurns;
     }
 
-    public Integer getScore() {
+    Integer getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    void setScore(Integer score) {
         this.score = score;
     }
 
