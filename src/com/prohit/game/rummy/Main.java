@@ -76,6 +76,7 @@ public class Main {
                 deck.shuffle();
                 System.out.print("\n");
 
+                // Selecting first turn randomly
                 Integer currentPlayerId = new Random().nextInt(players.size());
 
                 while (true) {
