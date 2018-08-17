@@ -8,5 +8,3 @@ At the beginning, game will ask for basic information like no. of players, inclu
 Each player will get a turn and option to use card from discarded pile or to draw new card from stock.
 
 Game will end when only one player is remaining.
-
-Note: For now, logic to verify melds is not completed. So user will have to check and announce the result.

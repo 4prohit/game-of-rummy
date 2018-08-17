@@ -15,6 +15,10 @@ class Card {
         return faceValue;
     }
 
+    public Suit getSuit() {
+        return suit;
+    }
+
     @Override
     public String toString() {
         if (FaceValue.JOKER.equals(faceValue)) {

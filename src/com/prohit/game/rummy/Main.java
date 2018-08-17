@@ -43,6 +43,7 @@ public class Main {
 
             System.out.println("Initializing deck for game...");
             Deck deck = new Deck(includeJoker, eliminationScore);
+            deck.shuffle();
             System.out.print(deck);
             System.out.print("\n\n");
 
@@ -54,6 +55,7 @@ public class Main {
 
                 // Reset deck
                 deck.initialize();
+                deck.shuffle();
 
                 // Reset cards of all players
                 System.out.println("Current scores of all players...");
